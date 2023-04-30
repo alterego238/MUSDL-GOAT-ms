@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="daiwenxun@10.140.0.31:22 key" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
+    <serverData>
+      <paths name="SH-AI-LAB">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mnt/petrelfs/daiwenxun/AS-AQA/Exp/MUSDL-master/MUSDL-master" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="daiwenxun@10.140.0.31:22 key">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mnt/petrelfs/daiwenxun/AS-AQA/Exp/MUSDL-master/MUSDL-master" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="daiwenxun@10.140.0.31:22 key (1)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mnt/petrelfs/daiwenxun/AS-AQA/Exp/MUSDL-master/MUSDL-master" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
