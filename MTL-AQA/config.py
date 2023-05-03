@@ -33,19 +33,19 @@ def get_parser():
     parser.add_argument('--num_selected_frames', type=int, help='number of selected frames per 16 frames', default=1)
 
     # [PATH]
-    parser.add_argument('--data_path', type=str, help='root of dataset', default='/mnt/petrelfs/daiwenxun/AS-AQA/Video_result')
-    parser.add_argument('--anno_path', type=str, help='path of annotation file', default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/AS-AQA/Anno_result/anno_dict.pkl')
-    parser.add_argument('--boxes_path', type=str, help='path of boxes annotation file', default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/DINO/ob_result_new.pkl')
+    parser.add_argument('--data_path', type=str, help='root of dataset', default='/mnt/disk_1/jiale_intern/file_for_logo/Video_result')
+    parser.add_argument('--anno_path', type=str, help='path of annotation file', default='/mnt/disk_1/jiale_intern/file_for_logo/anno_dict.pkl')
+    parser.add_argument('--boxes_path', type=str, help='path of boxes annotation file', default='/mnt/disk_1/jiale_intern/file_for_logo/ob_result_new.pkl')
     # backbone features path
-    parser.add_argument('--i3d_feature_path', type=str, help='path of i3d feature dict', default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/AS-AQA/video_feature_dict.pkl')
-    parser.add_argument('--swin_feature_path', type=str, help='path of swin feature dict', default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/video-swin-features/swin_features_dict_new.pkl')
-    parser.add_argument('--bpbb_feature_path', type=str, help='path of bridge-prompt feature dict', default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/AS-AQA/bpbb_features_540.pkl')
+    parser.add_argument('--i3d_feature_path', type=str, help='path of i3d feature dict', default='/mnt/disk_1/jiale_intern/file_for_logo/video_feature_dict_numpy.pkl')
+    parser.add_argument('--swin_feature_path', type=str, help='path of swin feature dict', default='/mnt/disk_1/jiale_intern/file_for_logo/swin_features_dict_new_numpy.pkl')
+    parser.add_argument('--bpbb_feature_path', type=str, help='path of bridge-prompt feature dict', default='/mnt/disk_1/jiale_intern/file_for_logo/bpbb_features_540.pkl')
     # attention features path
-    parser.add_argument('--cnn_feature_path', type=str, help='path of cnn feature dict', default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/Inceptionv3/inception_feature_dict.pkl')
-    parser.add_argument('--bp_feature_path', type=str, default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/AS-AQA/bp_features', help='bridge prompt feature path')
-    parser.add_argument('--formation_feature_path', type=str, default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/AS-AQA/formation_features_middle_1.pkl', help='formation feature path')
+    parser.add_argument('--cnn_feature_path', type=str, help='path of cnn feature dict', default='/mnt/disk_1/jiale_intern/file_for_logo/inception_feature_dict.pkl')
+    parser.add_argument('--bp_feature_path', type=str, default='/mnt/disk_1/jiale_intern/file_for_logo/bp_features', help='bridge prompt feature path')
+    parser.add_argument('--formation_feature_path', type=str, default='/mnt/disk_1/jiale_intern/file_for_logo/formation_features_middle_1_numpy.pkl', help='formation feature path')
     # others
-    parser.add_argument('--stage1_model_path', type=str, default='/mnt/petrelfs/daiwenxun/AS-AQA/Exp/Group-AQA-Distributed/ckpts/STAGE1_256frames_rho0.3257707338254451_(224, 224)_(25, 25)_loss82.48323059082031.pth', help='stage1_model_path')
+    parser.add_argument('--stage1_model_path', type=str, default='/mnt/disk_1/jiale_intern/file_for_logo/STAGE1_256frames_rho0.3257707338254451_(224, 224)_(25, 25)_loss82.48323059082031.pth', help='stage1_model_path')
     parser.add_argument('--train_dropout_prob', type=float, default=0.3, help='train_dropout_prob')
 
     # [BOOL]

@@ -15,12 +15,12 @@ class Attention(nn.Cell):
         # QKV matrix
         self.q_matrix = nn.Dense(linear_dim, linear_dim, has_bias=qkv_bias)
         self.k_matrix = nn.Dense(linear_dim, linear_dim, has_bias=qkv_bias)
-        self.attn_drop = nn.Dropout(attn_drop) if attn_drop != 0 else None
+        self.attn_drop = nn.Dropout(p=attn_drop)
         self.bn = nn.BatchNorm1d(540, eps=1e-05, momentum=0.1, affine=True, use_batch_statistics=True)
 
         self.relu = nn.ReLU()
         self.proj = nn.Dense(dim, dim)
-        self.proj_drop = nn.Dropout(proj_drop) if proj_drop != 0 else None
+        self.proj_drop = nn.Dropout(p=proj_drop)
 
         for m in self.cells():
             if isinstance(m, nn.Dense):
@@ -37,14 +37,14 @@ class Attention(nn.Cell):
 
         attn = (q @ k.transpose((0, 1, 3, 2))) * self.scale  # B,num_heads,N,N
         attn = ops.softmax(attn, axis=-1)
-        attn = self.attn_drop(attn) if not self.attn_drop is None else attn
+        attn = self.attn_drop(attn)
 
         v = x.reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)  # B,num_heads,N,C'
         # x = (attn @ v).transpose(1, 2).reshape(B, N, C)  # B,N,C
         x = x + (attn @ v).transpose(0, 2, 1, 3).reshape(B, N, C)  # B,N,C
         x = self.bn(x.permute(0, 2, 1).reshape(B * C, N)).reshape(B, C, N).permute(0, 2, 1).reshape(B, N, C)
         x = self.proj(x)
-        x = self.proj_drop(x) if not self.attn_drop is None else x
+        x = self.proj_drop(x)
 
         q = q.permute(0, 2, 1, 3).reshape(B, N, self.linear_dim)
         k = k.permute(0, 2, 1, 3).reshape(B, N, self.linear_dim)
@@ -91,8 +91,8 @@ if __name__ == '__main__':
     from mindspore.common.initializer import One, Normal
     import argparse
 
-    from mindspore import context
-    context.set_context(device_target='CPU')
+    '''from mindspore import context
+    context.set_context(device_target='CPU')'''
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_heads', type=int, default=8, help='number of self-attention heads')

@@ -73,7 +73,8 @@ def get_dataloaders(args):
     test_dataset_generator = VideoDataset('test', args)
     test_dataset = GeneratorDataset(test_dataset_generator, ["data"], shuffle=False, num_parallel_workers=args.num_workers)
     test_dataset = test_dataset.batch(batch_size=args.test_batch_size)
-    test_dataloader = test_dataset.create_tuple_iterator()
+    dataloaders['test'] = test_dataset
+    #test_dataloader = test_dataset.create_tuple_iterator()
     '''dataloaders['test'] = torch.utils.data.DataLoader(VideoDataset('test', args),
                                                       batch_size=args.test_batch_size,
                                                       num_workers=args.num_workers,
@@ -93,7 +94,8 @@ def get_dataloaders(args):
         train_dataset_generator = VideoDataset('train', args)
         train_dataset = GeneratorDataset(train_dataset_generator, ["data"], shuffle=False, num_parallel_workers=args.num_workers)
         train_dataset = train_dataset.batch(batch_size=args.train_batch_size)
-        train_dataloader = train_dataset.create_tuple_iterator()
+        dataloaders['train'] = train_dataset
+        #train_dataloader = train_dataset.create_tuple_iterator()
         '''dataloaders['train'] = torch.utils.data.DataLoader(VideoDataset('train', args),
                                                            batch_size=args.train_batch_size,
                                                            num_workers=args.num_workers,
@@ -234,14 +236,14 @@ def main(dataloaders, i3d, evaluator, base_logger, args):
             attn_list = []
             key_list = []
             if split == 'train' or (split == 'test'):# and is_main_process()):
-                for data in dataloaders[split]:
+                for data in dataloaders[split].create_dict_iterator():
                     true_scores.extend(data['final_score'].asnumpy())
                     clip_feats = data['feature']  # B,540,1024
                     if not args.use_i3d_bb:
                         clip_feats = linear_bp(clip_feats)  # B,540,1024
 
                     if split == 'train':
-                        def forward_fn():
+                        def forward_fn(data):
                             start = time.time()
                             ######### GOAT START ##########
                             if args.use_goat:
@@ -296,14 +298,14 @@ def main(dataloaders, i3d, evaluator, base_logger, args):
 
                             probs = evaluator(clip_feats.mean(1))
                             preds = compute_score(args.type, probs, data)
-                            pred_scores.extend([i.item() for i in preds])
+                            pred_scores.extend([i.asnumpy().item() for i in preds])
                             loss = compute_loss(args.type, criterion, probs, data)
 
                             infer_time = time.time() - start
                             return loss, pred_scores, infer_time
                         
                         grad_fn = ms.value_and_grad(forward_fn, None, optimizer.parameters, has_aux=True)
-                        (loss, pred_scores, infer_time), grads = grad_fn()
+                        (loss, pred_scores, infer_time), grads = grad_fn(data)
                         loss = ops.depend(loss, optimizer(grads))
                         '''loss = compute_loss(args.type, criterion, probs, data)
                         optimizer.zero_grad()
@@ -364,7 +366,7 @@ def main(dataloaders, i3d, evaluator, base_logger, args):
 
                         probs = evaluator(clip_feats.mean(1))
                         preds = compute_score(args.type, probs, data)
-                        pred_scores.extend([i.item() for i in preds])
+                        pred_scores.extend([i.asnumpy().item() for i in preds])
 
                         infer_time = time.time() - start
 

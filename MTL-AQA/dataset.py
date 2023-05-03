@@ -4,7 +4,7 @@ import os
 import numpy as np
 import mindspore as ms
 import mindspore.ops as ops
-from msvideo.data import transforms
+#from msvideo.data import transforms
 import glob
 from PIL import Image
 import pickle as pkl
@@ -46,11 +46,11 @@ class VideoDataset:
         self.num_selected_frames = args.num_selected_frames
 
         # transforms
-        self.transforms = transforms.Compose([
+        '''self.transforms = transforms.Compose([
             transforms.VideoResize(self.img_size),
             transforms.VideoToTensor(),
             transforms.VideoNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ])
+        ])'''
 
     def proc_label(self, data):
         # Scores of MTL dataset ranges from 0 to 104.5, we normalize it into 0~100
@@ -227,7 +227,7 @@ class VideoDataset:
         data['key'] = key
         data = self.load_goat_data(data, key)
         self.proc_label(data)
-        return data
+        return data['final_score'].float(), data['feature'].float(), data['key'].float(), data['boxes'].float(), data['cnn_features'].float(), data['soft_label'].float()
 
     def __len__(self):
         return len(self.keys)
@@ -287,10 +287,27 @@ if __name__ == '__main__':
 
     from mindspore.dataset import GeneratorDataset
 
+    train_dataset_generator = VideoDataset('train', args)
+    print('-' * 5 + 'train' + '-' * 5)
+    train_dataset_generator[0]
+
+    train_dataset = GeneratorDataset(train_dataset_generator, ['data', 'final_score', 'feature', 'key', 'boxes', 'cnn_features', 'soft_label'], shuffle=False, num_parallel_workers=args.workers)
+    train_dataset = train_dataset.batch(batch_size=args.train_batch_size)
+    train_dataloader = train_dataset.create_tuple_iterator()
+
+    data_get = next(iter(train_dataset.create_dict_iterator()))
+    for key, value in data_get.items():
+        print(key, value.shape)
+
+
     test_dataset_generator = VideoDataset('test', args)
-    test_dataset = GeneratorDataset(test_dataset_generator, ["data"], shuffle=False, num_parallel_workers=args.num_workers)
+    print('-' * 5 + 'test' + '-' * 5)
+    test_dataset_generator[0]
+
+    test_dataset = GeneratorDataset(test_dataset_generator, ['data', 'final_score', 'feature', 'key', 'boxes', 'cnn_features', 'soft_label'], shuffle=False, num_parallel_workers=args.workers)
     test_dataset = test_dataset.batch(batch_size=args.test_batch_size)
     test_dataloader = test_dataset.create_tuple_iterator()
-    data = next(test_dataset.create_dict_iterator())
-    print(data["data"].keys(), data["target"].keys())
-    print(next(test_dataloader))
+
+    data_get = next(iter(test_dataset.create_dict_iterator()))
+    for key, value in data_get.items():
+        print(key, value.shape)
